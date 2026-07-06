@@ -1,0 +1,44 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --surface: #f8fafc;
+  --primary: #4f46e5; /* Indigo 600 */
+  --secondary: #0ea5e9; /* Light Blue 500 */
+  --border: #e2e8f0;
+  --text: #0f172a;
+  --text-muted: #64748b;
+  
+  --token-te: #3b82f6; /* Blue 500 */
+  --token-en: #22c55e; /* Green 500 */
+  --token-other: #94a3b8; /* Slate 400 */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #020617; /* Slate 950 */
+    --surface: #0f172a; /* Slate 900 */
+    --primary: #6366f1; /* Indigo 500 */
+    --secondary: #38bdf8; /* Light Blue 400 */
+    --border: #1e293b;
+    --text: #f8fafc;
+    --text-muted: #94a3b8;
+    
+    --token-te: #60a5fa; /* Blue 400 */
+    --token-en: #4ade80; /* Green 400 */
+    --token-other: #64748b; /* Slate 500 */
+  }
+}
+
+body {
+  @apply bg-[var(--background)] text-[var(--text)] font-sans antialiased;
+}
+
+/* Glassmorphism utilities */
+.glass {
+  @apply bg-[var(--surface)] bg-opacity-70 backdrop-blur-md border border-[var(--border)];
+}

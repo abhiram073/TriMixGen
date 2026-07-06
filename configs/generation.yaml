@@ -1,0 +1,37 @@
+model:
+  name: "google/mt5-small"
+  
+tokenization:
+  max_source_length: 256
+  max_target_length: 128
+  padding: "max_length"
+  truncation: true
+
+inference:
+  # Base settings
+  max_new_tokens: 128
+  min_new_tokens: 5
+  
+  # Decoding Strategy Options
+  greedy:
+    do_sample: false
+    num_beams: 1
+    
+  beam_search:
+    do_sample: false
+    num_beams: 4
+    early_stopping: true
+    length_penalty: 1.0
+    no_repeat_ngram_size: 3
+    
+  top_k_sampling:
+    do_sample: true
+    top_k: 50
+    temperature: 0.7
+    
+  nucleus_sampling:
+    do_sample: true
+    top_p: 0.92
+    top_k: 50
+    temperature: 0.8
+    repetition_penalty: 1.2

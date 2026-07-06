@@ -1,0 +1,17 @@
+emoji_handler:
+  strategy: 'replace_sentiment'
+
+language_annotator:
+  confidence_thresholds:
+    tier1_universal: 1.0
+    tier2_unicode: 1.0
+    tier3_ne: 0.7
+    tier4_mixed: 0.8
+    tier5_dict: 0.9
+    tier6_romanized: 0.7
+    tier7_ambiguous: 0.5
+  dataset_thresholds:
+    "alpaca": 0.65       # Empirically selected for 95% retention of Romanized data
+    "hold": 0.70         # Empirically selected for 71% retention of noisy natural code-mixed
+    "sentiment": 0.75    # Native Telugu data (100% retention at 0.75)
+    "default": 0.75      # Global fallback

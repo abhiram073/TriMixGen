@@ -1,0 +1,22 @@
+# Model Architecture Configuration
+# Avoids hardcoding model paths and architectural parameters in code.
+
+# Language Identification (LID) Model Config
+lid:
+  model_name_or_path: "xlm-roberta-base"
+  num_labels: 3 # English, Telugu, Universal/Punctuation
+  max_length: 128
+  dropout_rate: 0.1
+
+# Generation Model Config
+generation:
+  model_name_or_path: "google/mt5-small"
+  max_source_length: 256
+  max_target_length: 256
+  
+  # LoRA specific configs
+  use_peft: true
+  lora_r: 8
+  lora_alpha: 32
+  lora_dropout: 0.1
+  target_modules: ["q", "v"]

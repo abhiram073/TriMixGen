@@ -1,0 +1,20 @@
+training:
+  output_dir: "outputs/experiments/gen_001/"
+  per_device_train_batch_size: 2
+  per_device_eval_batch_size: 2
+  gradient_accumulation_steps: 1
+  learning_rate: 3e-4
+  weight_decay: 0.01
+  num_train_epochs: 1
+  warmup_ratio: 0.1
+  logging_steps: 10
+  eval_strategy: "epoch"
+  save_strategy: "epoch"
+  load_best_model_at_end: true
+  metric_for_best_model: "loss"
+  greater_is_better: false
+  seed: 42
+  max_grad_norm: 1.0
+  fp16: false
+  dataloader_num_workers: 0
+  remove_unused_columns: false

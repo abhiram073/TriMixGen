@@ -1,0 +1,29 @@
+# Datasets Configuration for TriMixGen
+
+# Dataset A: Natural Code-Mixed Text (DravidianLangTech)
+# Source: GitHub
+hold_telugu:
+  name: "HOLD-Telugu"
+  source: "github"
+  repo_url: "https://raw.githubusercontent.com/Salman1804102/DravidianLangTech-EACL-2024-HOLD/main/Dataset/training_data_telugu-hate%20%281%29.xlsx"
+  test_url: "https://raw.githubusercontent.com/Salman1804102/DravidianLangTech-EACL-2024-HOLD/main/Dataset/telugu-hate-speech-test%20%281%29.xlsx"
+  task: "hate_speech_detection"
+  description: "Natural code-mixed YouTube comments for Hate and Offensive Language Detection in Telugu."
+
+# Dataset B: Code-Mixed Text Generation (Romanized)
+# Source: Hugging Face
+telugu_alpaca_romanized:
+  name: "Telugu-Alpaca-Romanized"
+  source: "huggingface"
+  repo_id: "Telugu-LLM-Labs/telugu_alpaca_yahma_cleaned_filtered_romanized"
+  task: "generation"
+  description: "Instruction tuning dataset with Romanized Telugu responses, ideal for learning transliterated generation."
+
+# Dataset C: Domain Adaptation & Sentiment
+# Source: Hugging Face
+telugu_sentiment:
+  name: "Telugu-Sentiment"
+  source: "huggingface"
+  repo_id: "mounikaiiith/Telugu_Sentiment"
+  task: "sentiment_analysis"
+  description: "35k sentiment annotated Telugu text for domain adaptation."

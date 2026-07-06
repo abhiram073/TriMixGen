@@ -1,0 +1,27 @@
+templates:
+  english_to_codemixed:
+    template: "Instruction: {instruction}\nContext: {context}"
+    required_kwargs: ["instruction", "context"]
+  en_to_cm:
+    template: "Translate to colloquial Telugu-English: {english_text}"
+    required_kwargs: ["english_text"]
+  
+  te_to_cm:
+    template: "Rewrite naturally using English words: {telugu_text}"
+    required_kwargs: ["telugu_text"]
+    
+  instruction:
+    template: "Instruction: {instruction}\nGenerate only natural Telugu-English code-mixed text written in Roman script. Do not generate URLs, HTML, Markdown, XML, explanations, or random punctuation.\nInput: {input}\nResponse:"
+    required_kwargs: ["instruction", "input"]
+    
+  conversation:
+    template: "Context: {context}\nReply as a Telugu speaker:"
+    required_kwargs: ["context"]
+    
+  few_shot:
+    template: "Example 1:\nEn: How are you?\nTe: ela unnav bro?\nExample 2:\nEn: {english_text}\nTe:"
+    required_kwargs: ["english_text"]
+    
+  zero_shot:
+    template: "Instruction: {instruction}\nGenerate only natural Telugu-English code-mixed text written in Roman script. Do not generate URLs, HTML, Markdown, XML, explanations, or random punctuation."
+    required_kwargs: ["instruction"]

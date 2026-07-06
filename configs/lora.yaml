@@ -1,0 +1,7 @@
+# LoRA Configuration for mT5-small
+
+r: 8
+lora_alpha: 16
+lora_dropout: 0.05
+bias: "none"
+target_modules: ["q", "v"] # Standard practice for Transformer attention blocks

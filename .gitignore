@@ -3,59 +3,44 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-# Distribution / packaging
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-
-# PyInstaller
-*.manifest
-*.spec
-
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-.hypothesis/
-.pytest_cache/
-
-# Jupyter Notebook
-.ipynb_checkpoints
-
-# pyenv
-.python-version
-
-# Environments
+# Virtual Environments
 .env
-.venv
-env/
+.env.*
+.venv/
 venv/
-ENV/
+env/
 
-# IDEs
+# Node Modules
+node_modules/
+dist/
+build/
+coverage/
+
+# IDE / Editor
 .vscode/
 .idea/
 *.swp
 *.swo
-*~
 
-# OS
+# Testing / Cache
+.pytest_cache/
+.cache/
+.coverage
+htmlcov/
+*.log
+
+# Jupyter
+.ipynb_checkpoints
+
+# TriMixGen Specific
+data/*
+!data/.gitkeep
+outputs/*
+!outputs/.gitkeep
+models/*
+!models/.gitkeep
+checkpoints/
+
+# OS specific
 .DS_Store
+Thumbs.db
