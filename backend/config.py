@@ -1,6 +1,11 @@
 import os
-import torch
 from typing import List
+
+try:
+    import torch
+    HAS_TORCH = True
+except ImportError:
+    HAS_TORCH = False
 
 class Settings:
     PROJECT_NAME: str = "TriMixGen Code-Mixing Generation API"
@@ -24,6 +29,8 @@ class Settings:
 
     @property
     def DEVICE(self) -> str:
+        if not HAS_TORCH:
+            return "cpu"
         if torch.cuda.is_available():
             return "cuda"
         elif torch.backends.mps.is_available():

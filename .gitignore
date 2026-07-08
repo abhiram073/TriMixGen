@@ -40,6 +40,17 @@ outputs/*
 models/*
 !models/.gitkeep
 checkpoints/
+experiments/**/*.pt
+experiments/**/*.pth
+experiments/**/*.log
+
+# Frontend build
+frontend/dist/
+frontend/build/
+
+# Local config files
+*.local.*
+backend.log
 
 # OS specific
 .DS_Store

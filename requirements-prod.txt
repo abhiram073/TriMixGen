@@ -1,0 +1,17 @@
+# Production Dependencies ONLY
+# Excludes: torch, transformers, datasets (use DEMO_MODE instead)
+
+# Core (lightweight)
+numpy>=1.26.0
+pandas>=2.1.0
+
+# API
+fastapi>=0.110.0
+uvicorn>=0.27.0
+pydantic>=2.6
+
+# Optional NLP (if needed for LID service)
+scikit-learn>=1.4.0
+
+# Deployment
+python-dotenv>=1.0.0
