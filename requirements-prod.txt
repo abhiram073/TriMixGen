@@ -11,8 +11,9 @@ fastapi>=0.110.0
 uvicorn>=0.27.0
 pydantic>=2.6
 
-# Optional NLP (if needed for LID service)
-scikit-learn>=1.4.0
+# System & Utilities
+psutil>=5.9.0  # For system monitoring in API health checks
+python-dotenv>=1.0.0  # Environment variable management
 
-# Deployment
-python-dotenv>=1.0.0
+# ML & Data Processing (lightweight)
+scikit-learn>=1.4.0  # For metrics, baseline classifiers
