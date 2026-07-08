@@ -19,6 +19,7 @@ services:
     name: trimixgen-frontend
     env: static
     buildCommand: npm install && npm run build
+    startCommand: npx serve -s dist -l $PORT
     staticPublishPath: ./dist
     rootDir: frontend
     routes:
