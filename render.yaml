@@ -17,12 +17,7 @@ services:
   # Frontend Static Site
   - type: web
     name: trimixgen-frontend
-    env: static
-    buildCommand: npm install && npm run build
-    startCommand: npx serve -s dist -l $PORT
-    staticPublishPath: ./dist
-    rootDir: frontend
-    routes:
-      - type: rewrite
-        source: /*
-        destination: /index.html
+    env: node
+    buildCommand: cd frontend && npm install && npm run build
+    startCommand: cd frontend && npx serve -s dist -l $PORT
+    rootDir: .
