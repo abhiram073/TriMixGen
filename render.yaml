@@ -14,10 +14,10 @@ services:
       - key: BACKEND_CORS_ORIGINS
         value: "*" # Update this with frontend URL for production
 
-  # Frontend React + Vite App
+  # Frontend Static Site
   - type: web
     name: trimixgen-frontend
     env: node
-    buildCommand: cd frontend && npm install --legacy-peer-deps && npm run build
-    startCommand: cd frontend && npx serve -s dist -p $PORT
+    buildCommand: cd frontend && npm run build
+    startCommand: npx serve -s frontend/dist -l $PORT
     rootDir: .
