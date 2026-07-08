@@ -4,6 +4,7 @@
 # Core (lightweight)
 numpy>=1.26.0
 pandas>=2.1.0
+pyyaml>=6.0  # For config files
 
 # API
 fastapi>=0.110.0

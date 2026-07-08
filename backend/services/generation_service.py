@@ -1,7 +1,6 @@
 import logging
 import os
 from backend.config import settings
-from src.models.generation.inference import Generator
 from backend.services.demo_generator import DemoGenerator
 
 logger = logging.getLogger(__name__)
@@ -20,15 +19,26 @@ class GenerationService:
             return
             
         logger.info(f"Initializing GenerationService on device: {settings.DEVICE}")
+        logger.info(f"DEMO_MODE: {settings.DEMO_MODE}")
+        
         try:
-            self.generator = Generator(
-                base_model_name=settings.MODEL_PATH,
-                lora_adapter_path=settings.LORA_ADAPTER_PATH if os.path.exists(settings.LORA_ADAPTER_PATH) else None,
-                config_path="configs/generation.yaml"
-            )
-            # Override device dynamically if possible (Generator might hardcode or use default)
-            if hasattr(self.generator.model.model, 'to'):
-                self.generator.model.model.to(settings.DEVICE)
+            if settings.DEMO_MODE:
+                # Lightweight demo mode - no ML libraries needed
+                logger.info("Using DemoGenerator (lightweight mode, no PyTorch)")
+                self.generator = DemoGenerator()
+            else:
+                # Production mode - requires transformers and torch
+                logger.info("Loading full ML model (Generator with mT5 + LoRA)")
+                from src.models.generation.inference import Generator
+                
+                self.generator = Generator(
+                    base_model_name=settings.MODEL_PATH,
+                    lora_adapter_path=settings.LORA_ADAPTER_PATH if os.path.exists(settings.LORA_ADAPTER_PATH) else None,
+                    config_path="configs/generation.yaml"
+                )
+                # Override device dynamically if possible (Generator might hardcode or use default)
+                if hasattr(self.generator.model.model, 'to'):
+                    self.generator.model.model.to(settings.DEVICE)
                 
             self.initialized = True
             logger.info("GenerationService initialized successfully.")
