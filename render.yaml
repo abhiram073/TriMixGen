@@ -5,14 +5,14 @@ services:
     env: python
     buildCommand: pip install -r requirements-prod.txt
     startCommand: uvicorn backend.app:app --host 0.0.0.0 --port $PORT
-    plan: starter # ⚠️ Change to 'standard' (2GB RAM) for production use of full models
+    plan: standard # production: use 'standard' (2GB RAM) for full models
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.0
       - key: DEMO_MODE
-        value: "true" # Uses lightweight DemoGenerator instead of mT5
+        value: "false" # Use real model in production; disable demo mode
       - key: BACKEND_CORS_ORIGINS
-        value: "*" # Update this with frontend URL for production
+        value: "https://your-frontend-domain" # Replace with your frontend URL in production
 
   # Frontend Static Site
   - type: web
