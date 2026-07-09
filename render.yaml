@@ -18,6 +18,6 @@ services:
   - type: web
     name: trimixgen-frontend
     env: node
-    buildCommand: cd frontend && npm install --legacy-peer-deps && npm run build
-    startCommand: npx serve -s frontend/dist -l $PORT
-    rootDir: .
+    rootDir: frontend
+    buildCommand: npm ci --legacy-peer-deps && npm run build
+    startCommand: npx serve -s dist -l $PORT
