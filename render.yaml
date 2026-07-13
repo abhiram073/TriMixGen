@@ -5,45 +5,28 @@ services:
     env: python
     buildCommand: pip install -r requirements-prod.txt
     startCommand: uvicorn backend.app:app --host 0.0.0.0 --port $PORT
-    plan: starter  # 'starter' is sufficient for DEMO_MODE; upgrade to 'standard' only when real mT5+LoRA weights are added
-    # --- Persistent disk for HuggingFace model cache ---
-    # Uncomment the block below if/when you switch DEMO_MODE to false and need
-    # to cache mT5-small + IndicBERT on Render so they are NOT re-downloaded
-    # on every cold start (which caused the 7.8s health-check latency).
-    # disk:
-    #   name: hf-model-cache
-    #   mountPath: /opt/hf_cache
-    #   sizeGB: 5
+    plan: starter
     envVars:
       - key: PYTHON_VERSION
         value: "3.11.0"
 
-      # FIX 1 – DEMO_MODE must stay true until mT5+LoRA weights are pushed to
-      # HuggingFace Hub or added to a Render persistent disk.  Setting this to
-      # "false" on a deploy that has no model weights causes a crash/silent
-      # fallback and is the primary source of production errors.
+      # Core backend settings
       - key: DEMO_MODE
-        value: "true"   # ← flip to "false" only after weights are available
-
-      # FIX 2 – Replace the placeholder with the actual Render frontend URL.
-      # Without this, every browser request is CORS-blocked even though the
-      # backend is running fine.
-      - key: BACKEND_CORS_ORIGINS
-        value: "https://trimixgen-frontend.onrender.com"  # ← set your real frontend URL here
-
-      # FIX 3 – Point HuggingFace libraries at a stable cache directory so that
-      # model files are downloaded once (to the persistent disk above) instead
-      # of on every cold start.  Safe to set even while DEMO_MODE=true.
+        value: "true"
+      - key: USE_MOCK_LID
+        value: "true"
+        
+      # Cache settings (safe to keep)
       - key: HF_HOME
         value: /opt/hf_cache
       - key: TRANSFORMERS_CACHE
         value: /opt/hf_cache
 
-      # Keep USE_MOCK_LID in sync with DEMO_MODE.
-      - key: USE_MOCK_LID
-        value: "true"   # ← flip to "false" together with DEMO_MODE
+      # This points to the frontend service defined below
+      - key: BACKEND_CORS_ORIGINS
+        value: "https://trimixgen-frontend.onrender.com"
 
-  # Frontend Static Site
+  # Frontend Service
   - type: web
     name: trimixgen-frontend
     env: node
@@ -51,7 +34,6 @@ services:
     buildCommand: npm ci --legacy-peer-deps && npm run build
     startCommand: npx serve -s dist -l $PORT
     envVars:
-      # Point the React app at the backend service deployed above.
-      # Vite exposes variables prefixed with VITE_ to the browser bundle.
+      # This points to the backend service defined above
       - key: VITE_API_BASE_URL
-        value: "https://trimixgen-backend.onrender.com"  # ← set your real backend URL here
+        value: "https://trimixgen-backend.onrender.com"
