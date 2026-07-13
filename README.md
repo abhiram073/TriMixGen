@@ -97,6 +97,15 @@ npm install
 npm run dev
 ```
 
+## ☁️ Deployment (Render)
+
+TriMixGen is configured to deploy as a **unified single-service architecture** on [Render](https://render.com). The FastAPI backend serves both the API routes and the compiled React frontend, which avoids CORS issues and minimizes resource usage.
+
+1. Go to your [Render Dashboard](https://dashboard.render.com).
+2. Click **New +** and select **Blueprint**.
+3. Connect your GitHub repository.
+4. Render will automatically detect the `render.yaml` file and deploy the unified `trimixgen-service`.
+
 ## 🧪 Testing
 ```bash
 # Run backend tests
