@@ -1,14 +1,16 @@
 services:
-  # Backend API Service
+  # Unified API & Frontend Service
   - type: web
-    name: trimixgen-backend
+    name: trimixgen-service
     env: python
-    buildCommand: pip install -r requirements-prod.txt
+    buildCommand: npm install -g npm@latest && pip install -r requirements-prod.txt && cd frontend && npm ci --legacy-peer-deps && npm run build && cd ..
     startCommand: uvicorn backend.app:app --host 0.0.0.0 --port $PORT
     plan: starter
     envVars:
       - key: PYTHON_VERSION
         value: "3.11.0"
+      - key: NODE_VERSION
+        value: "20.10.0"
 
       # Core backend settings
       - key: DEMO_MODE
@@ -16,24 +18,13 @@ services:
       - key: USE_MOCK_LID
         value: "true"
         
-      # Cache settings (safe to keep)
+      # Cache settings
       - key: HF_HOME
         value: /opt/hf_cache
       - key: TRANSFORMERS_CACHE
         value: /opt/hf_cache
 
-      # This points to the frontend service defined below
+      # CORS is no longer strictly needed since frontend and backend share the same origin,
+      # but it's kept as a wildcard or just the self-origin just in case.
       - key: BACKEND_CORS_ORIGINS
-        value: "https://trimixgen-frontend.onrender.com"
-
-  # Frontend Service
-  - type: web
-    name: trimixgen-frontend
-    env: node
-    rootDir: frontend
-    buildCommand: npm ci --legacy-peer-deps && npm run build
-    startCommand: npx serve -s dist -l $PORT
-    envVars:
-      # This points to the backend service defined above
-      - key: VITE_API_BASE_URL
-        value: "https://trimixgen-backend.onrender.com"
+        value: "*"
