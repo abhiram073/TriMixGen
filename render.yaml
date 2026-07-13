@@ -3,7 +3,7 @@ services:
   - type: web
     name: trimixgen-service
     env: python
-    buildCommand: npm install -g npm@latest && pip install -r requirements-prod.txt && cd frontend && npm ci --legacy-peer-deps && npm run build && cd ..
+    buildCommand: pip install -r requirements-prod.txt && cd frontend && npm ci --legacy-peer-deps && npm run build && cd ..
     startCommand: uvicorn backend.app:app --host 0.0.0.0 --port $PORT
     plan: starter
     envVars:
