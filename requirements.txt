@@ -35,3 +35,4 @@ pre-commit>=3.6.0    # Git hook management
 
 # Testing
 pytest>=8.0.0        # Unit and integration testing framework
+httpx<0.28.0         # Pinned for FastAPI TestClient compatibility
