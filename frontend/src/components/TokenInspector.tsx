@@ -6,14 +6,18 @@ interface Props {
 }
 
 const getLabelColor = (label: string) => {
-  if (label === 'TE') return 'text-token-te bg-token-te/10 border-token-te/30';
-  if (label === 'EN') return 'text-token-en bg-token-en/10 border-token-en/30';
-  return 'text-token-other bg-token-other/10 border-token-other/30';
+  if (label === 'HIN') return 'text-blue-500 bg-blue-500/10 border-blue-500/30';
+  if (label === 'BEN') return 'text-green-500 bg-green-500/10 border-green-500/30';
+  if (label === 'GUJ') return 'text-orange-500 bg-orange-500/10 border-orange-500/30';
+  if (label === 'ENG') return 'text-purple-500 bg-purple-500/10 border-purple-500/30';
+  return 'text-slate-500 bg-slate-500/10 border-slate-500/30';
 };
 
 const getLabelName = (label: string) => {
-  if (label === 'TE') return 'Telugu';
-  if (label === 'EN') return 'English';
+  if (label === 'HIN') return 'Hindi';
+  if (label === 'BEN') return 'Bengali';
+  if (label === 'GUJ') return 'Gujarati';
+  if (label === 'ENG') return 'English';
   return 'Other/Punctuation';
 };
 
@@ -26,10 +30,12 @@ export const TokenInspector: React.FC<Props> = ({ tokens, labels }) => {
     <div className="mt-4 p-4 rounded-xl border border-[var(--border)] bg-[var(--background)]">
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-semibold text-sm">Language Visualization</h3>
-        <div className="flex gap-4 text-xs">
-          <span className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-full bg-token-te"></div> Telugu</span>
-          <span className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-full bg-token-en"></div> English</span>
-          <span className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-full bg-token-other"></div> Universal</span>
+        <div className="flex gap-4 text-xs flex-wrap justify-end">
+          <span className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-full bg-blue-500"></div> Hindi</span>
+          <span className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-full bg-green-500"></div> Bengali</span>
+          <span className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-full bg-orange-500"></div> Gujarati</span>
+          <span className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-full bg-purple-500"></div> English</span>
+          <span className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-full bg-slate-400"></div> Universal</span>
         </div>
       </div>
       

@@ -33,8 +33,15 @@ def generate_text(request: GenerateRequest):
     lid_service = get_lid_service()
     
     # 1. Format Prompt
-    instruction = gen_service.format_style_prompt(request.prompt, request.style, request.english_usage)
-    logger.info(f"[Step 1] User Prompt: '{request.prompt}' | Rendered Instruction: '{instruction}'")
+    instruction = gen_service.format_style_prompt(
+        request.sentence_1, 
+        request.sentence_2, 
+        request.sentence_3, 
+        request.language_pair, 
+        request.style, 
+        request.english_usage
+    )
+    logger.info(f"[Step 1] User Sentences: '{request.sentence_1}', '{request.sentence_2}', '{request.sentence_3}' | Pair: {request.language_pair} | Rendered Instruction: '{instruction}'")
     
     # 2. Generate
     try:
@@ -51,7 +58,7 @@ def generate_text(request: GenerateRequest):
     
     # 4. LID Tagging
     try:
-        tag_result = lid_service.tag_text(clean_text)
+        tag_result = lid_service.tag_text(clean_text, request.language_pair)
         logger.info(f"[Step 4] LID Labels Generated: {tag_result['labels']}")
     except RuntimeError as e:
         logger.error(f"LID Service Unavailable: {str(e)}")
@@ -81,7 +88,7 @@ def generate_text(request: GenerateRequest):
 def tag_text(request: TagRequest):
     lid_service = get_lid_service()
     try:
-        result = lid_service.tag_text(request.text)
+        result = lid_service.tag_text(request.text, request.language_pair)
     except RuntimeError as e:
         raise HTTPException(status_code=503, detail=f"LID Service Unavailable: {str(e)}")
     except Exception as e:

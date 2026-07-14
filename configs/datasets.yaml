@@ -1,29 +1,51 @@
-# Datasets Configuration for TriMixGen
+# Dataset Registry Configuration
 
-# Dataset A: Natural Code-Mixed Text (DravidianLangTech)
-# Source: GitHub
-hold_telugu:
-  name: "HOLD-Telugu"
-  source: "github"
-  repo_url: "https://raw.githubusercontent.com/Salman1804102/DravidianLangTech-EACL-2024-HOLD/main/Dataset/training_data_telugu-hate%20%281%29.xlsx"
-  test_url: "https://raw.githubusercontent.com/Salman1804102/DravidianLangTech-EACL-2024-HOLD/main/Dataset/telugu-hate-speech-test%20%281%29.xlsx"
-  task: "hate_speech_detection"
-  description: "Natural code-mixed YouTube comments for Hate and Offensive Language Detection in Telugu."
+# This configuration is used by the DatasetRegistry to manage all datasets.
+# It acts as the single source of truth for where data is loaded from.
 
-# Dataset B: Code-Mixed Text Generation (Romanized)
-# Source: Hugging Face
-telugu_alpaca_romanized:
-  name: "Telugu-Alpaca-Romanized"
-  source: "huggingface"
-  repo_id: "Telugu-LLM-Labs/telugu_alpaca_yahma_cleaned_filtered_romanized"
-  task: "generation"
-  description: "Instruction tuning dataset with Romanized Telugu responses, ideal for learning transliterated generation."
+datasets:
+  # AI4Bharat IndicCMix (Primary Generative Data)
+  - name: "IndicCMix"
+    version: "1.0"
+    source: "huggingface"
+    download_url: "ai4bharat/IndicCMix"
+    license: "CC-BY-4.0"
+    tasks: ["generation"]
+    supported_languages: ["HIN", "BEN", "GUJ", "ENG"]
+    supported_combinations: ["HIN_ENG", "BEN_ENG", "GUJ_ENG"]
+    script: "Roman"
+    local_storage_path: "datasets/raw/indiccmix"
+    requires_manual_download: true  # Gated dataset
 
-# Dataset C: Domain Adaptation & Sentiment
-# Source: Hugging Face
-telugu_sentiment:
-  name: "Telugu-Sentiment"
-  source: "huggingface"
-  repo_id: "mounikaiiith/Telugu_Sentiment"
-  task: "sentiment_analysis"
-  description: "35k sentiment annotated Telugu text for domain adaptation."
+  # L3Cube HingLID (Primary Hindi-English Token LID Data)
+  - name: "L3Cube-HingLID"
+    version: "1.0"
+    source: "local"
+    download_url: "https://github.com/l3cube-pune/code-mixed-nlp"
+    license: "CC-BY-NC-4.0"
+    tasks: ["language_identification"]
+    supported_languages: ["HIN", "ENG"]
+    supported_combinations: ["HIN_ENG"]
+    script: "Roman"
+    local_storage_path: "datasets/raw/hinglid"
+    requires_manual_download: true
+
+  # Microsoft GLUECoS (Benchmark LID Data - Optional Extension)
+  - name: "GLUECoS-LID"
+    version: "1.0"
+    source: "local"
+    download_url: "https://microsoft.github.io/GLUECoS/"
+    license: "MIT"
+    tasks: ["language_identification"]
+    supported_languages: ["HIN", "ENG", "SPA"]
+    supported_combinations: ["HIN_ENG", "SPA_ENG"]
+    script: "Roman"
+    local_storage_path: "datasets/raw/gluecos"
+    requires_manual_download: true
+
+# Configurable split ratios for the dataset manager
+splits:
+  train: 0.8
+  validation: 0.1
+  test: 0.1
+  random_seed: 42

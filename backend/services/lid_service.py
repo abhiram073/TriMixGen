@@ -46,14 +46,20 @@ class LIDService:
 
     def _load_configs(self):
         """Loads dictionaries from configuration files."""
-        self.te_dict = set()
+        self.hin_dict = set()
+        self.ben_dict = set()
+        self.guj_dict = set()
         self.en_dict = set()
         self.suffixes = set()
         self.entities = set()
         
         try:
-            with open("configs/lid/romanized_telugu.yaml", "r") as f:
-                self.te_dict = set(yaml.safe_load(f).get("words", []))
+            with open("configs/lid/hindi_words.yaml", "r") as f:
+                self.hin_dict = set(yaml.safe_load(f).get("words", []))
+            with open("configs/lid/bengali_words.yaml", "r") as f:
+                self.ben_dict = set(yaml.safe_load(f).get("words", []))
+            with open("configs/lid/gujarati_words.yaml", "r") as f:
+                self.guj_dict = set(yaml.safe_load(f).get("words", []))
             with open("configs/lid/english_words.yaml", "r") as f:
                 self.en_dict = set(yaml.safe_load(f).get("words", []))
             with open("configs/lid/suffixes.yaml", "r") as f:
@@ -65,7 +71,6 @@ class LIDService:
 
     def normalize_text(self, text: str) -> str:
         """Removes punctuation and special characters."""
-        # This replaces punctuation with spaces to avoid joining words
         normalized = re.sub(r'[^\w\s]', ' ', text)
         return normalized
 
@@ -73,54 +78,58 @@ class LIDService:
         """Splits normalized text into a list of lowercase tokens."""
         return self.normalize_text(text).split()
 
-    def dictionary_lookup(self, token: str) -> bool:
-        """Tier 1: O(1) set lookup for Romanized Telugu core words."""
-        return token.lower() in self.te_dict
-
-    def suffix_lookup(self, token: str) -> bool:
-        """Tier 2: Morphological suffix detection for Telugu verbs/postpositions."""
-        token_lower = token.lower()
-        return any(token_lower.endswith(s) for s in self.suffixes)
-
-    def ner_lookup(self, token: str) -> bool:
-        """Tier 3: Named Entity Recognition."""
-        return token.lower() in self.entities
-
-    def english_lookup(self, token: str) -> bool:
-        """Tier 4: English dictionary detection."""
-        return token.lower() in self.en_dict
-
-    def classify_token(self, token: str) -> tuple:
+    def classify_token(self, token: str, language_pair: str) -> tuple:
         """Applies the Hybrid Pipeline to a single token, returning (Label, Reason, Tier)."""
-        if self.dictionary_lookup(token):
-            return "TE", "Found in Romanized Telugu dictionary", "Tier 1 (Dictionary)"
+        token_lower = token.lower()
+        
+        # Determine valid tags for this pair
+        valid_tags = {"HIN", "ENG", "OTHER"}
+        if "BEN" in language_pair:
+            valid_tags.add("BEN")
+        elif "GUJ" in language_pair:
+            valid_tags.add("GUJ")
             
-        if self.ner_lookup(token):
-            return "EN", "Identified as Named Entity", "Tier 2 (NER)"
+        # OTHER mapping for strict punctuation/numbers
+        if not re.match(r'^[a-zA-Z]+$', token):
+            return "OTHER", "Not a strict alphabetic word", "Tier 0 (Format)"
+
+        # Tier 1: Dictionary Lookup
+        if "BEN" in valid_tags and token_lower in self.ben_dict:
+            return "BEN", "Found in Bengali dictionary", "Tier 1"
+        if "GUJ" in valid_tags and token_lower in self.guj_dict:
+            return "GUJ", "Found in Gujarati dictionary", "Tier 1"
+        if token_lower in self.hin_dict:
+            return "HIN", "Found in Hindi dictionary", "Tier 1"
             
-        if self.suffix_lookup(token):
-            return "TE", "Matches Telugu morphological suffix", "Tier 3 (Suffix Rules)"
+        # Tier 2: NER
+        if token_lower in self.entities:
+            return "ENG", "Identified as Named Entity", "Tier 2"
             
-        if self.english_lookup(token):
-            return "EN", "Found in English dictionary", "Tier 4 (English Detector)"
+        # Tier 3: Suffixes
+        if any(token_lower.endswith(s) for s in self.suffixes):
+            # Fallback heuristic: assume HIN for suffixes for now
+            return "HIN", "Matches morphological suffix", "Tier 3"
+            
+        # Tier 4: English
+        if token_lower in self.en_dict:
+            return "ENG", "Found in English dictionary", "Tier 4"
             
         # Tier 5 Fallback (Model / Other)
         if self.is_mock_mode:
-            return "OTHER", "Token unknown to all heuristic tiers", "Tier 5 (OTHER)"
+            return "OTHER", "Token unknown to all heuristic tiers", "Tier 5"
         else:
-            # Here we would invoke self.model(token) if not mock mode
-            return "OTHER", "Unrecognized by production model", "Tier 5 (IndicBERT / OTHER)"
+            return "OTHER", "Unrecognized by production model", "Tier 5"
 
-    def calculate_labels(self, tokens: list) -> list:
+    def calculate_labels(self, tokens: list, language_pair: str) -> list:
         """Iterates through tokens and logs classifications."""
         labels = []
         for t in tokens:
-            label, reason, tier = self.classify_token(t)
+            label, reason, tier = self.classify_token(t, language_pair)
             labels.append(label)
-            logger.debug(f"LID Classification -> Token: '{t}' | Label: '{label}' | Tier: '{tier}' | Reason: '{reason}'")
+            logger.debug(f"LID Classification -> Token: '{t}' | Pair: {language_pair} | Label: '{label}' | Tier: '{tier}' | Reason: '{reason}'")
         return labels
 
-    def tag_text(self, text: str) -> dict:
+    def tag_text(self, text: str, language_pair: str) -> dict:
         """Public API endpoint for language identification."""
         if not self.initialized:
             if not self.is_mock_mode:
@@ -128,12 +137,8 @@ class LIDService:
             else:
                 raise RuntimeError("LIDService is not initialized.")
             
-        # 1. We keep original whitespace-separated tokens for return schema alignment 
-        # (Frontend relies on exact match with generated text for highlighting)
-        # BUT we classify based on normalized stripped tokens!
         original_tokens = text.split()
         
-        # 2. Extract words without punctuation for accurate classification
         cleaned_tokens = []
         for raw_t in original_tokens:
             clean = re.sub(r'[^\w]', '', raw_t)
@@ -142,8 +147,7 @@ class LIDService:
             else:
                 cleaned_tokens.append(raw_t) # fallback if it's purely punctuation
                 
-        # 3. Classify
-        labels = self.calculate_labels(cleaned_tokens)
+        labels = self.calculate_labels(cleaned_tokens, language_pair)
         
         return {
             "tokens": original_tokens,

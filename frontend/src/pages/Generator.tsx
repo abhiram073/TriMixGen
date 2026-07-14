@@ -11,19 +11,22 @@ export const Generator: React.FC = () => {
   const { generate, loading, error, result, reset } = useGenerate();
   const { history, addHistory, clearHistory } = useHistory();
 
-  const [prompt, setPrompt] = useState('');
+  const [sentence1, setSentence1] = useState('');
+  const [sentence2, setSentence2] = useState('');
+  const [sentence3, setSentence3] = useState('');
+  const [languagePair, setLanguagePair] = useState('HIN-BEN-ENG');
   const [style, setStyle] = useState('neutral');
   const [englishUsage, setEnglishUsage] = useState('auto');
   const [temperature, setTemperature] = useState(0.8);
 
   const handleSubmit = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
-    if (!prompt.trim()) return;
+    if (!sentence1.trim() || !sentence2.trim() || !sentence3.trim()) return;
 
     try {
-      const data = await generate({ prompt, style, english_usage: englishUsage, temperature });
+      const data = await generate({ sentence_1: sentence1, sentence_2: sentence2, sentence_3: sentence3, language_pair: languagePair, style, english_usage: englishUsage, temperature });
       addHistory({
-        prompt,
+        prompt: `1. ${sentence1} | 2. ${sentence2} | 3. ${sentence3}`,
         generated_text: data.generated_text,
         cmi: data.cmi
       });
@@ -41,15 +44,51 @@ export const Generator: React.FC = () => {
           
           <form onSubmit={handleSubmit} className="flex flex-col gap-5">
             <div>
-              <label className="block text-sm font-medium mb-2">Instruction Prompt</label>
+              <label className="block text-sm font-medium mb-2">Language Combination</label>
+              <select 
+                value={languagePair}
+                onChange={e => setLanguagePair(e.target.value)}
+                className="w-full p-2.5 rounded-lg border border-[var(--border)] bg-[var(--background)] focus:ring-2 focus:ring-primary"
+              >
+                <option value="HIN-BEN-ENG">Hindi-Bengali-English</option>
+                <option value="HIN-GUJ-ENG">Hindi-Gujarati-English</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-2">Sentence 1 (Hindi)</label>
               <textarea 
-                value={prompt}
-                onChange={e => setPrompt(e.target.value)}
-                placeholder="e.g. Write a review for the movie Kalki 2898 AD"
-                className="w-full p-3 rounded-lg border border-[var(--border)] bg-[var(--background)] focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
-                rows={4}
+                value={sentence1}
+                onChange={e => setSentence1(e.target.value)}
+                placeholder="Enter Hindi sentence..."
+                className="w-full p-2 rounded-lg border border-[var(--border)] bg-[var(--background)] focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
+                rows={2}
                 required
-                maxLength={500}
+                maxLength={200}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-2">Sentence 2 (Bengali or Gujarati)</label>
+              <textarea 
+                value={sentence2}
+                onChange={e => setSentence2(e.target.value)}
+                placeholder="Enter Bengali or Gujarati sentence..."
+                className="w-full p-2 rounded-lg border border-[var(--border)] bg-[var(--background)] focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
+                rows={2}
+                required
+                maxLength={200}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-2">Sentence 3 (English)</label>
+              <textarea 
+                value={sentence3}
+                onChange={e => setSentence3(e.target.value)}
+                placeholder="Enter English sentence..."
+                className="w-full p-2 rounded-lg border border-[var(--border)] bg-[var(--background)] focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
+                rows={2}
+                required
+                maxLength={200}
               />
             </div>
 
@@ -101,7 +140,7 @@ export const Generator: React.FC = () => {
 
             <button 
               type="submit"
-              disabled={loading || !prompt.trim()}
+              disabled={loading || !sentence1.trim() || !sentence2.trim() || !sentence3.trim()}
               className="w-full mt-2 py-3 bg-primary hover:bg-indigo-600 disabled:bg-primary/50 text-white font-semibold rounded-xl flex justify-center items-center gap-2 transition-colors"
             >
               {loading ? <Loader2 size={18} className="animate-spin" /> : <Send size={18} />}
@@ -110,7 +149,7 @@ export const Generator: React.FC = () => {
           </form>
         </div>
 
-        <PromptGallery onSelect={(p) => setPrompt(p)} />
+        <PromptGallery onSelect={(s1, s2, s3) => { setSentence1(s1); setSentence2(s2); setSentence3(s3); }} />
       </div>
 
       {/* Right Column: Output & Metrics */}

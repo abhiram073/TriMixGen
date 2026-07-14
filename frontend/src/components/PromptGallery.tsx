@@ -1,15 +1,13 @@
 import React from 'react';
 
 const PROMPTS = [
-  { label: 'Movie Review (Positive)', prompt: 'Write a positive Telugu-English movie review.' },
-  { label: 'Restaurant (Negative)', prompt: 'Write a negative Telugu-English restaurant review.' },
-  { label: 'College Exams (Casual)', prompt: 'Use a casual tone to discuss college exams in Telugu-English.' },
-  { label: 'Tech Discussion', prompt: 'Discuss the new smartphone in Telugu-English.' },
-  { label: 'Social Media Reply', prompt: 'Reply casually in code-mixed Telugu to this tweet.' },
+  { label: 'Movie Review (Positive)', s1: 'Film bahut badhiya thi, mujhe pasand aayi.', s2: 'Ami chhobita dekhe khub anondo peyechhi.', s3: 'The movie was really great, I enjoyed it.' },
+  { label: 'Restaurant (Negative)', s1: 'Khana bilkul bakwas tha aur service kharab thi.', s2: 'Khabar akdom bhalo chhilo na ar service kharap chhilo.', s3: 'The food was terrible and the service was bad.' },
+  { label: 'College Exams (Casual)', s1: 'Bhai, kal exam hai aur maine kuch nahi padha.', s2: 'Bhai, kal porikkha ar ami kichui porini.', s3: 'Bro, there is an exam tomorrow and I have not studied anything.' },
 ];
 
 interface Props {
-  onSelect: (prompt: string) => void;
+  onSelect: (s1: string, s2: string, s3: string) => void;
 }
 
 export const PromptGallery: React.FC<Props> = ({ onSelect }) => {
@@ -20,7 +18,7 @@ export const PromptGallery: React.FC<Props> = ({ onSelect }) => {
         {PROMPTS.map((p, idx) => (
           <button
             key={idx}
-            onClick={() => onSelect(p.prompt)}
+            onClick={() => onSelect(p.s1, p.s2, p.s3)}
             className="text-xs font-medium px-3 py-1.5 rounded-full border border-[var(--border)] bg-[var(--surface)] hover:border-primary hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1"
             aria-label={`Select prompt: ${p.label}`}
           >

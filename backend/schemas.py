@@ -4,17 +4,20 @@ from backend.config import settings
 import re
 
 class GenerateRequest(BaseModel):
-    prompt: str = Field(..., description="The user's query or instruction.")
+    sentence_1: str = Field(..., description="Monolingual sentence in language 1 (e.g. Hindi)")
+    sentence_2: str = Field(..., description="Monolingual sentence in language 2 (e.g. Bengali/Gujarati)")
+    sentence_3: str = Field(..., description="Monolingual sentence in language 3 (e.g. English)")
+    language_pair: str = Field(..., description="Requested language combination: HIN-BEN-ENG or HIN-GUJ-ENG")
     style: str = Field(default="neutral", description="Requested style: positive, negative, neutral, formal, informal.")
     english_usage: str = Field(default="auto", description="Requested English density: high, low, auto.")
     temperature: float = Field(default=0.8, ge=0.1, le=1.2)
     
-    @field_validator("prompt")
-    def validate_prompt(cls, v):
+    @field_validator("sentence_1", "sentence_2", "sentence_3")
+    def validate_sentences(cls, v):
         if not v.strip():
-            raise ValueError("Prompt cannot be empty.")
+            raise ValueError("Sentence cannot be empty.")
         if len(v) > settings.MAX_PROMPT_LENGTH:
-            raise ValueError(f"Prompt exceeds maximum length of {settings.MAX_PROMPT_LENGTH} characters.")
+            raise ValueError(f"Sentence exceeds maximum length of {settings.MAX_PROMPT_LENGTH} characters.")
         
         # Basic sanitization
         v = re.sub(r'[^\w\s.,!?\'"-]', '', v)
@@ -31,6 +34,7 @@ class GenerateResponse(BaseModel):
 
 class TagRequest(BaseModel):
     text: str = Field(..., min_length=1)
+    language_pair: str = Field(..., description="Requested language combination: HIN-BEN-ENG or HIN-GUJ-ENG")
 
 class TagResponse(BaseModel):
     tokens: List[str]

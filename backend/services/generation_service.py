@@ -69,24 +69,30 @@ class GenerationService:
         )
         return outputs[0]
         
-    def format_style_prompt(self, base_prompt: str, style: str, english_usage: str) -> str:
+    def format_style_prompt(self, s1: str, s2: str, s3: str, language_pair: str, style: str, english_usage: str) -> str:
         """Translates user options into explicit GEN_003 instruction strings."""
-        parts = [base_prompt]
+        parts = [f"Translate and mix the following sentences into trilingual code-mixed text:\n1: {s1}\n2: {s2}\n3: {s3}\n\nConstraints:"]
+        
+        # Language Pair
+        if language_pair == "HIN-BEN-ENG":
+            parts.append("- Must use Hindi, Bengali, and English.")
+        elif language_pair == "HIN-GUJ-ENG":
+            parts.append("- Must use Hindi, Gujarati, and English.")
         
         # Style
         if style == "positive":
-            parts.append("Write a positive Telugu-English review.")
+            parts.append("- Make it a positive review.")
         elif style == "negative":
-            parts.append("Write a negative Telugu-English review.")
+            parts.append("- Make it a negative review.")
         elif style == "formal":
-            parts.append("Use a formal and respectful tone.")
+            parts.append("- Use a formal and respectful tone.")
         elif style == "informal":
-            parts.append("Use a casual, conversational tone.")
+            parts.append("- Use a casual, conversational tone.")
             
         # English Usage
         if english_usage == "high":
-            parts.append("Use a high amount of English vocabulary.")
+            parts.append("- Use a high amount of English vocabulary.")
         elif english_usage == "low":
-            parts.append("Use predominantly Telugu vocabulary.")
+            parts.append("- Use predominantly Indic vocabulary.")
             
-        return " ".join(parts).strip()
+        return "\n".join(parts).strip()

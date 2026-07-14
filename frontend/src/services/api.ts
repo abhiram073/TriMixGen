@@ -10,7 +10,10 @@ export const api = axios.create({
 });
 
 export interface GenerateRequest {
-  prompt: string;
+  sentence_1: string;
+  sentence_2: string;
+  sentence_3: string;
+  language_pair: string;
   style?: string;
   english_usage?: string;
   temperature?: number;
@@ -28,6 +31,7 @@ export interface GenerateResponse {
 
 export interface TagRequest {
   text: string;
+  language_pair: string;
 }
 
 export interface TagResponse {

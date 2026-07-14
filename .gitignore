@@ -55,3 +55,8 @@ backend.log
 # OS specific
 .DS_Store
 Thumbs.db
+# Datasets
+datasets/raw/*
+!datasets/raw/.gitkeep
+datasets/processed/*
+!datasets/processed/.gitkeep

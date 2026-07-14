@@ -11,11 +11,11 @@ export const Home: React.FC = () => {
       </div>
       
       <h1 className="text-5xl font-extrabold tracking-tight mb-6">
-        Generate <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">Telugu-English</span> Code-Mixed Text
+        Generate <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">Trilingual Code-Mixed</span> Text
       </h1>
       
       <p className="text-xl text-text-muted mb-10 leading-relaxed">
-        TriMixGen is an advanced curriculum-trained generation model. It seamlessly controls Sentiment, Formality, and Code-Mixing density natively in Romanized Telugu.
+        TriMixGen-Indic is an advanced curriculum-trained generation model. It seamlessly controls Sentiment and Formality in Romanized trilingual text.
       </p>
       
       <div className="flex flex-col sm:flex-row gap-4 mb-16">
